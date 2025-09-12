@@ -1,0 +1,35 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Spotify MCP server - composition root and application entry point",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "spotify-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "node --loader ts-node/esm src/bin/dev.ts",
+    "oauth": "node --loader ts-node/esm src/bin/oauth.ts",
+    "start": "node dist/index.js",
+    "test": "vitest",
+    "test:unit": "vitest run",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.5.0",
+    "@spotify-mcp/auth": "workspace:*",
+    "@spotify-mcp/core": "workspace:*",
+    "@spotify-mcp/mcp": "workspace:*",
+    "@spotify-mcp/platform": "workspace:*",
+    "@spotify-mcp/spotify": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  }
+}
