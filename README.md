@@ -42,7 +42,7 @@ A modern, robust Spotify MCP (Model Context Protocol) server implementation usin
 
 ```bash
 # Clone and install dependencies
-git clone https://github.com/spotify-mcp/spotify-mcp.git
+git clone https://github.com/ctonyperry/spotify-mcp/spotify-mcp.git
 cd spotify-mcp
 pnpm install
 
