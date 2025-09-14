@@ -1,0 +1,31 @@
+{
+  "description": "Pause playback control example",
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "method": "tools/call",
+    "params": {
+      "name": "playback.control.set",
+      "arguments": {
+        "action": "pause"
+      }
+    }
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "result": {
+      "content": [{
+        "type": "text",
+        "text": "{\n  \"success\": true,\n  \"message\": \"Playback paused\",\n  \"action\": \"pause\",\n  \"device\": {\n    \"id\": \"ed48c2b67a4bb3b8d5c8c84ed07a9c9c12345678\",\n    \"name\": \"My iPhone\",\n    \"type\": \"Smartphone\"\n  }\n}"
+      }]
+    }
+  },
+  "logs": [
+    {"level":"info","timestamp":"2024-01-15T10:32:00.000Z","component":"mcp-tools","toolName":"playback.control.set","requestId":"req_1234567892_ghi789","message":"Tool invocation started","args":{"action":"pause"}},
+    {"level":"debug","timestamp":"2024-01-15T10:32:00.100Z","component":"spotify-client","requestId":"req_1234567892_ghi789","message":"Getting current playback state"},
+    {"level":"debug","timestamp":"2024-01-15T10:32:00.300Z","component":"core-services","requestId":"req_1234567892_ghi789","message":"Determining playback action","currentState":"playing","requestedAction":"pause","resolvedAction":"pause"},
+    {"level":"debug","timestamp":"2024-01-15T10:32:00.400Z","component":"spotify-client","requestId":"req_1234567892_ghi789","message":"Spotify API request","endpoint":"/me/player/pause","params":"[REDACTED]"},
+    {"level":"info","timestamp":"2024-01-15T10:32:00.650Z","component":"mcp-tools","toolName":"playback.control.set","requestId":"req_1234567892_ghi789","message":"Tool invocation completed","durationMs":650}
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "spotify": {
+    "clientId": "your-spotify-client-id-here",
+    "redirectUri": "https://localhost:8888/callback",
+    "scopes": [
+      "user-read-playback-state",
+      "user-modify-playback-state",
+      "user-read-currently-playing",
+      "user-read-recently-played",
+      "playlist-read-private",
+      "playlist-read-collaborative",
+      "playlist-modify-private",
+      "playlist-modify-public",
+      "user-library-read",
+      "user-library-modify",
+      "user-top-read"
+    ]
+  },
+  "auth": {
+    "storage": {
+      "type": "file",
+      "path": ".secrets/tokens.json"
+    }
+  },
+  "logging": {
+    "level": "info",
+    "format": "json"
+  },
+  "server": {
+    "https": {
+      "enabled": true,
+      "cert": ".cert/localhost.crt",
+      "key": ".cert/localhost.key"
+    }
+  }
+}

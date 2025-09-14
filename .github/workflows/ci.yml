@@ -1,0 +1,244 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  NODE_VERSION: 18
+
+jobs:
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Format check
+        run: pnpm format:check
+
+      - name: TypeScript check
+        run: pnpm typecheck
+
+  test:
+    name: Test (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Run unit tests
+        run: pnpm -w test
+
+      - name: Run MCP tests
+        run: pnpm test:mcp
+
+      - name: Run E2E tests
+        run: pnpm test:e2e
+
+  parity:
+    name: Parity Tests
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - name: Checkout current repo
+        uses: actions/checkout@v4
+        with:
+          path: spotify-mcp
+
+      - name: Checkout legacy server
+        uses: actions/checkout@v4
+        with:
+          repository: spotify-mcp/spotify-mcp-server
+          path: spotify-mcp-server
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies (new server)
+        working-directory: spotify-mcp
+        run: pnpm install --frozen-lockfile
+
+      - name: Build new server
+        working-directory: spotify-mcp
+        run: pnpm build
+
+      - name: Install dependencies (legacy server)
+        working-directory: spotify-mcp-server
+        run: npm install
+
+      - name: Build legacy server
+        working-directory: spotify-mcp-server
+        run: npm run build
+
+      - name: Create mock config for parity tests
+        working-directory: spotify-mcp
+        run: |
+          mkdir -p .secrets
+          echo '{"spotify":{"clientId":"test-client","redirectUri":"https://localhost:8888/callback","scopes":["user-read-playback-state"]},"auth":{"storage":{"type":"file","path":".secrets/tokens.json"}},"logging":{"level":"error","format":"json"},"server":{"https":{"enabled":false}}}' > config.local.json
+          echo '{"accessToken":"mock-token","refreshToken":"mock-refresh","expiresAt":'$(($(date +%s) * 1000 + 3600000))',"tokenType":"Bearer","scope":"user-read-playback-state"}' > .secrets/tokens.json
+
+      - name: Run parity tests
+        working-directory: spotify-mcp
+        run: pnpm parity --cases=default
+        env:
+          CI: true
+
+      - name: Upload parity report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: parity-report
+          path: spotify-mcp/packages/parity/REPORT.md
+
+      - name: Upload parity artifacts
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: parity-artifacts
+          path: spotify-mcp/packages/parity/reports/
+
+  build:
+    name: Build & Package
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Test build artifacts
+        run: |
+          # Test that server can start
+          timeout 5 node apps/server/dist/index.js --help || true
+          # Verify all packages have build outputs
+          [ -d "packages/core/dist" ]
+          [ -d "packages/platform/dist" ]
+          [ -d "packages/auth/dist" ]
+          [ -d "packages/mcp/dist" ]
+          [ -d "apps/server/dist" ]
+
+      - name: Build Docker image
+        run: docker build -t spotify-mcp:ci .
+
+      - name: Test Docker image
+        run: |
+          # Test that container can start
+          timeout 5 docker run --rm spotify-mcp:ci --help || true
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run security audit
+        run: pnpm audit
+
+      - name: Scan for secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD

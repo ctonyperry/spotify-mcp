@@ -1,0 +1,36 @@
+{
+  "name": "@spotify-mcp/parity",
+  "version": "1.0.0",
+  "description": "Functional parity verification suite for Spotify MCP server",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "parity": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "parity:run": "node --loader ts-node/esm src/cli.ts",
+    "test": "vitest",
+    "test:unit": "vitest run",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@spotify-mcp/auth": "workspace:*",
+    "@spotify-mcp/core": "workspace:*",
+    "@spotify-mcp/mcp": "workspace:*",
+    "@spotify-mcp/platform": "workspace:*",
+    "@spotify-mcp/spotify": "workspace:*",
+    "commander": "^11.0.0",
+    "chalk": "^5.3.0",
+    "diff": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/diff": "^7.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  }
+}

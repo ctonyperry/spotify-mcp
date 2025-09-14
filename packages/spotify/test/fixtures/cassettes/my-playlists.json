@@ -1,0 +1,115 @@
+{
+  "name": "my-playlists",
+  "records": [
+    {
+      "request": {
+        "url": "https://api.spotify.com/v1/me/playlists?limit=20&offset=0",
+        "method": "GET",
+        "headers": {
+          "Authorization": "[REDACTED]",
+          "Content-Type": "application/json"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "href": "https://api.spotify.com/v1/me/playlists?offset=0&limit=20",
+          "limit": 20,
+          "next": null,
+          "offset": 0,
+          "previous": null,
+          "total": 2,
+          "items": [
+            {
+              "collaborative": false,
+              "description": "My favorite tracks",
+              "external_urls": {
+                "spotify": "https://open.spotify.com/playlist/playlist1"
+              },
+              "followers": {
+                "href": null,
+                "total": 5
+              },
+              "href": "https://api.spotify.com/v1/playlists/playlist1",
+              "id": "playlist1",
+              "images": [
+                {
+                  "url": "https://i.scdn.co/image/[REDACTED]",
+                  "height": 300,
+                  "width": 300
+                }
+              ],
+              "name": "My Favorites",
+              "owner": {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/user/testuser"
+                },
+                "followers": {
+                  "href": null,
+                  "total": 42
+                },
+                "href": "https://api.spotify.com/v1/users/testuser",
+                "id": "testuser",
+                "type": "user",
+                "uri": "spotify:user:testuser",
+                "display_name": "Test User",
+                "images": []
+              },
+              "public": true,
+              "snapshot_id": "snap1",
+              "tracks": {
+                "href": "https://api.spotify.com/v1/playlists/playlist1/tracks",
+                "total": 10
+              },
+              "type": "playlist",
+              "uri": "spotify:playlist:playlist1"
+            },
+            {
+              "collaborative": true,
+              "description": null,
+              "external_urls": {
+                "spotify": "https://open.spotify.com/playlist/playlist2"
+              },
+              "followers": {
+                "href": null,
+                "total": 12
+              },
+              "href": "https://api.spotify.com/v1/playlists/playlist2",
+              "id": "playlist2",
+              "images": [],
+              "name": "Collaborative Mix",
+              "owner": {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/user/testuser"
+                },
+                "followers": {
+                  "href": null,
+                  "total": 42
+                },
+                "href": "https://api.spotify.com/v1/users/testuser",
+                "id": "testuser",
+                "type": "user",
+                "uri": "spotify:user:testuser",
+                "display_name": "Test User",
+                "images": []
+              },
+              "public": false,
+              "snapshot_id": "snap2",
+              "tracks": {
+                "href": "https://api.spotify.com/v1/playlists/playlist2/tracks",
+                "total": 25
+              },
+              "type": "playlist",
+              "uri": "spotify:playlist:playlist2"
+            }
+          ]
+        }
+      },
+      "timestamp": "2023-12-25T10:15:00.000Z"
+    }
+  ],
+  "version": "1.0.0"
+}

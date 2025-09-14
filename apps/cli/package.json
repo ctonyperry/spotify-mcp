@@ -1,0 +1,35 @@
+{
+  "name": "@spotify-mcp/cli",
+  "version": "0.1.0",
+  "description": "Demo CLI for Spotify MCP server - testing and demonstration tool",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "spotify-mcp-cli": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@spotify-mcp/auth": "workspace:*",
+    "@spotify-mcp/core": "workspace:*",
+    "@spotify-mcp/mcp": "workspace:*",
+    "@spotify-mcp/platform": "workspace:*",
+    "@spotify-mcp/spotify": "workspace:*",
+    "commander": "^11.0.0",
+    "table": "^6.8.0",
+    "chalk": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

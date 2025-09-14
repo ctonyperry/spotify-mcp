@@ -1,0 +1,30 @@
+{
+  "description": "Search for tracks - Bohemian Rhapsody example",
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/call",
+    "params": {
+      "name": "tracks.search",
+      "arguments": {
+        "query": "bohemian rhapsody",
+        "limit": 3
+      }
+    }
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "content": [{
+        "type": "text",
+        "text": "{\n  \"items\": [\n    {\n      \"uri\": \"spotify:track:4u7EnebtmKWzUH433cf5Qv\",\n      \"id\": \"4u7EnebtmKWzUH433cf5Qv\",\n      \"name\": \"Bohemian Rhapsody\",\n      \"artists\": [\"Queen\"],\n      \"durationMs\": 355000,\n      \"explicit\": false,\n      \"popularity\": 89\n    },\n    {\n      \"uri\": \"spotify:track:7tFiyTwD0nx5a1eklYtX2J\",\n      \"id\": \"7tFiyTwD0nx5a1eklYtX2J\",\n      \"name\": \"Bohemian Rhapsody (The Original Soundtrack)\",\n      \"artists\": [\"Queen\"],\n      \"durationMs\": 355000,\n      \"explicit\": false,\n      \"popularity\": 87\n    }\n  ],\n  \"total\": 1000,\n  \"limit\": 3,\n  \"offset\": 0,\n  \"hasMore\": true\n}"
+      }]
+    }
+  },
+  "logs": [
+    {"level":"info","timestamp":"2024-01-15T10:30:00.000Z","component":"mcp-tools","toolName":"tracks.search","requestId":"req_1234567890_abc123","message":"Tool invocation started","args":{"query":"bohemian rhapsody","limit":3}},
+    {"level":"debug","timestamp":"2024-01-15T10:30:00.500Z","component":"spotify-client","requestId":"req_1234567890_abc123","message":"Spotify API request","endpoint":"/search","params":"[REDACTED]"},
+    {"level":"info","timestamp":"2024-01-15T10:30:01.234Z","component":"mcp-tools","toolName":"tracks.search","requestId":"req_1234567890_abc123","message":"Tool invocation completed","durationMs":1234}
+  ]
+}

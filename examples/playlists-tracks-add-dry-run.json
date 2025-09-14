@@ -1,0 +1,37 @@
+{
+  "description": "Add tracks to playlist with dry run and deduplication",
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "method": "tools/call",
+    "params": {
+      "name": "playlists.tracks.add",
+      "arguments": {
+        "playlistId": "37i9dQZF1DX0XUsuxWHRQd",
+        "uris": [
+          "spotify:track:4u7EnebtmKWzUH433cf5Qv",
+          "spotify:track:7tFiyTwD0nx5a1eklYtX2J",
+          "spotify:track:4u7EnebtmKWzUH433cf5Qv"
+        ],
+        "dedupe": true,
+        "dryRun": true
+      }
+    }
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": {
+      "content": [{
+        "type": "text",
+        "text": "{\n  \"success\": true,\n  \"message\": \"Would add 2 tracks (1 duplicates skipped)\",\n  \"plannedAdds\": 2,\n  \"duplicatesSkipped\": 1\n}"
+      }]
+    }
+  },
+  "logs": [
+    {"level":"info","timestamp":"2024-01-15T10:31:00.000Z","component":"mcp-tools","toolName":"playlists.tracks.add","requestId":"req_1234567891_def456","message":"Tool invocation started","args":{"playlistId":"37i9dQZF1DX0XUsuxWHRQd","uris":["spotify:track:4u7EnebtmKWzUH433cf5Qv","spotify:track:7tFiyTwD0nx5a1eklYtX2J","spotify:track:4u7EnebtmKWzUH433cf5Qv"],"dedupe":true,"dryRun":true}},
+    {"level":"debug","timestamp":"2024-01-15T10:31:00.200Z","component":"mcp-tools","requestId":"req_1234567891_def456","message":"Applying deduplication","originalCount":3,"deduplicatedCount":2},
+    {"level":"info","timestamp":"2024-01-15T10:31:00.250Z","component":"mcp-tools","toolName":"playlists.tracks.add","requestId":"req_1234567891_def456","message":"Dry run completed","plannedAdds":2,"duplicatesSkipped":1},
+    {"level":"info","timestamp":"2024-01-15T10:31:00.255Z","component":"mcp-tools","toolName":"playlists.tracks.add","requestId":"req_1234567891_def456","message":"Tool invocation completed","durationMs":255}
+  ]
+}

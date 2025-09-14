@@ -1,0 +1,117 @@
+# Architecture Diagram (ASCII Art)
+
+This file contains an ASCII representation of the hexagonal architecture.
+For a proper diagram, consider generating with tools like:
+- Mermaid: https://mermaid.js.org/
+- PlantUML: https://plantuml.com/
+- Draw.io: https://app.diagrams.net/
+
+## Hexagonal Architecture Diagram
+
+```
+                          ┌─────────────────────────────────────┐
+                          │         MCP CLIENT                  │
+                          │    (Claude, AI Assistant)          │
+                          └─────────────┬───────────────────────┘
+                                        │ JSON-RPC / stdio
+                                        │
+            ┌───────────────────────────▼───────────────────────────┐
+            │              INFRASTRUCTURE                           │
+            │                apps/server/                          │
+            │  ┌─────────────────────────────────────────────────┐  │
+            │  │            Composition Root                     │  │
+            │  │  • Server setup & dependency injection         │  │
+            │  │  • Request routing & error handling            │  │
+            │  └─────────────────────────────────────────────────┘  │
+            └─────────────────┬─────────────────┬─────────────────┘
+                              │                 │
+            ┌─────────────────▼─────────────────▼─────────────────┐
+            │                APPLICATION                          │
+            │                packages/mcp/                       │
+            │  ┌────────────┐ ┌──────────────┐ ┌────────────────┐ │
+            │  │Tool Registry│ │Input/Output │ │ MCP Handlers   │ │
+            │  │            │ │ Schemas     │ │                │ │
+            │  │• Discovery │ │• Validation │ │• tracks.search │ │
+            │  │• Metadata  │ │• Type Safety│ │• playlists.*   │ │
+            │  │• Routing   │ │• Zod Schemas│ │• playback.*    │ │
+            │  └────────────┘ └──────────────┘ │• library.*     │ │
+            │                                 │• queue.*       │ │
+            │                                 └────────────────┘ │
+            └─────────────────┬─────────────────┬─────────────────┘
+                              │                 │
+            ┌─────────────────▼─────────────────▼─────────────────┐
+            │                  DOMAIN                             │
+            │               packages/core/                        │
+            │  ┌────────────┐ ┌──────────────┐ ┌────────────────┐ │
+            │  │Domain Types│ │Business Logic│ │Domain Rules    │ │
+            │  │            │ │              │ │                │ │
+            │  │• Track     │ │• SearchSvc   │ │• Deduplication │ │
+            │  │• Playlist  │ │• PlaylistOps │ │• Constraints   │ │
+            │  │• Library   │ │• PlaybackCtrl│ │• Selection     │ │
+            │  │• Queue     │ │• LibraryMgmt │ │• Normalization │ │
+            │  └────────────┘ └──────────────┘ └────────────────┘ │
+            │            (Pure functions - no I/O)               │
+            └─────────────────┬─────────────────┬─────────────────┘
+                              │                 │
+         ┌────────────────────▼───┐ ┌───────────▼─────────────┐
+         │      ADAPTERS          │ │      ADAPTERS           │
+         │                        │ │                         │
+         │ ┌────────────────────┐ │ │ ┌─────────────────────┐ │
+         │ │   Spotify API      │ │ │ │    OAuth & Auth     │ │
+         │ │ packages/spotify/  │ │ │ │  packages/auth/     │ │
+         │ │                    │ │ │ │                     │ │
+         │ │• HTTP client       │ │ │ │• OAuth PKCE flow    │ │
+         │ │• API mapping       │ │ │ │• Token storage      │ │
+         │ │• Rate limiting     │ │ │ │• Refresh handling   │ │
+         │ │• Retry logic       │ │ │ │• Secure storage     │ │
+         │ │• Pagination        │ │ │ └─────────────────────┘ │
+         │ └────────────────────┘ │ │                         │
+         │                        │ │ ┌─────────────────────┐ │
+         │                        │ │ │  Platform Utils     │ │
+         │                        │ │ │ packages/platform/  │ │
+         │                        │ │ │                     │ │
+         │                        │ │ │• Config loading     │ │
+         │                        │ │ │• Structured logging │ │
+         │                        │ │ │• HTTP base client   │ │
+         │                        │ │ │• Error types        │ │
+         │                        │ │ │• Utilities          │ │
+         └────────────┬───────────┘ │ └─────────────────────┘ │
+                      │             └─────────────────────────┘
+                      │
+         ┌────────────▼───────────────────────────────────┐
+         │              EXTERNAL SYSTEMS                  │
+         │                                                │
+         │  ┌─────────────────────────────────────────┐   │
+         │  │           Spotify Web API               │   │
+         │  │                                         │   │
+         │  │  • Authentication & Authorization       │   │
+         │  │  • Search endpoints                     │   │
+         │  │  • Playlist management                  │   │
+         │  │  • Playback control                     │   │
+         │  │  • User library operations              │   │
+         │  │  • Queue management                     │   │
+         │  └─────────────────────────────────────────┘   │
+         └────────────────────────────────────────────────┘
+```
+
+## Data Flow Arrows
+
+```
+Request Flow:
+MCP Client → Infrastructure → Application → Domain → Adapters → External API
+
+Response Flow:
+External API → Adapters → Domain → Application → Infrastructure → MCP Client
+
+Error Flow:
+Any Layer → Error Handling → Structured Logging → Client Response
+```
+
+## Key Characteristics
+
+- **Hexagonal Shape**: Core domain is isolated from external concerns
+- **Dependency Inversion**: Domain doesn't depend on adapters
+- **Single Responsibility**: Each layer has one clear purpose
+- **Testability**: Each layer can be tested in isolation
+- **Configurability**: Adapters can be swapped without changing domain
+```

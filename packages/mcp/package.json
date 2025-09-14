@@ -16,9 +16,40 @@
     "dev": "tsc --watch",
     "test": "vitest",
     "test:unit": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "lint": "eslint src/**/*.ts",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepublishOnly": "pnpm build && pnpm test && pnpm lint"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "keywords": [
+    "spotify",
+    "mcp",
+    "model-context-protocol",
+    "tools",
+    "schemas"
+  ],
+  "author": "Spotify MCP Contributors",
+  "license": "MIT",
+  "homepage": "https://github.com/spotify-mcp/spotify-mcp#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/spotify-mcp/spotify-mcp.git",
+    "directory": "packages/mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/spotify-mcp/spotify-mcp/issues"
+  },
+  "peerDependencies": {
+    "@spotify-mcp/spotify": "^1.0.0"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.5.0",
@@ -29,6 +60,7 @@
   "devDependencies": {
     "@types/node": "^20.0.0",
     "typescript": "^5.0.0",
-    "vitest": "^1.0.0"
+    "vitest": "^1.0.0",
+    "@vitest/coverage-v8": "^1.0.0"
   }
 }

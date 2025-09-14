@@ -1,0 +1,51 @@
+{
+  "name": "user-profile",
+  "records": [
+    {
+      "request": {
+        "url": "https://api.spotify.com/v1/me",
+        "method": "GET",
+        "headers": {
+          "Authorization": "[REDACTED]",
+          "Content-Type": "application/json"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "country": "US",
+          "display_name": "Test User",
+          "email": "test@example.com",
+          "explicit_content": {
+            "filter_enabled": false,
+            "filter_locked": false
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/testuser"
+          },
+          "followers": {
+            "href": null,
+            "total": 42
+          },
+          "href": "https://api.spotify.com/v1/users/testuser",
+          "id": "testuser",
+          "images": [
+            {
+              "url": "https://i.scdn.co/image/[REDACTED]",
+              "height": 300,
+              "width": 300
+            }
+          ],
+          "product": "premium",
+          "type": "user",
+          "uri": "spotify:user:testuser"
+        }
+      },
+      "timestamp": "2023-12-25T10:00:00.000Z"
+    }
+  ],
+  "version": "1.0.0"
+}
